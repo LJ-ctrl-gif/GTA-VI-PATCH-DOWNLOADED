@@ -4,7 +4,7 @@ A PS4 homebrew project for a patch-information viewer and compatibility checker.
 
 ## Current application
 
-The native interface now uses a black background with neon-red accents and displays the configured patch title ID, version, source platform, and compatibility status.
+The native interface uses a black background with neon-red accents and has three controller-selectable screens: **Patch Info**, **Compatibility**, and **About**. Use the DualShock 4 D-pad left/right buttons to switch screens. The patch screen displays the configured title ID, version, source platform, and compatibility status.
 
 The configured source page is `https://prosperopatches.com/PPSA29660?v=01.002.001`.
 The title identifier `PPSA29660` is identified in this project as a PS5 title. The app marks it **NOT COMPATIBLE WITH PS4** and keeps download disabled. It does not download, decrypt, install, or modify game packages.
@@ -29,7 +29,7 @@ The GitHub Actions workflow:
 4. Compiles the native PS4 application.
 5. Packages the output as a PKG and uploads it as a workflow artifact.
 
-A PKG is not considered ready until the workflow completes successfully. The first native screen is a UI foundation; live webpage retrieval and a download queue are not implemented yet.
+A PKG is not considered ready until the workflow completes successfully. Build 0.2 includes the three-screen interface and controller navigation. Live webpage retrieval and a download queue are not implemented.
 
 ## Target
 
