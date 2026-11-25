@@ -27,7 +27,7 @@ jobs:
       - name: Install build utilities
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential clang lld make curl jq imagemagick libicu70
+          sudo apt-get install -y build-essential clang lld make curl jq librsvg2-bin libicu70
 
       - name: Test patch compatibility guard
         run: |
@@ -67,7 +67,7 @@ jobs:
       - name: Generate PS4 icon
         run: |
           mkdir -p sce_sys/about
-          convert -background none assets/icon.svg -resize 512x512 sce_sys/icon0.png
+          rsvg-convert -w 512 -h 512 assets/icon.svg -o sce_sys/icon0.png
           identify -format '%wx%h' sce_sys/icon0.png | grep -qx '512x512'
 
       - name: Build PS4 PKG
