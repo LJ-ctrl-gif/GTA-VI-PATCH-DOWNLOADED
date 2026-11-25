@@ -69,7 +69,7 @@ jobs:
           mkdir -p sce_sys/about
           rsvg-convert -w 512 -h 512 assets/icon.svg -o /tmp/icon-alpha.png
           convert /tmp/icon-alpha.png -background black -alpha remove -alpha off -depth 8 PNG24:sce_sys/icon0.png
-          identify -format '%wx%h %m %[channels]' sce_sys/icon0.png | grep -q '^512x512 PNG s?rgb'
+          identify -format '%wx%h %m %[channels]' sce_sys/icon0.png | grep -Eq '^512x512 PNG s?rgb'
           file sce_sys/icon0.png
 
       - name: Validate package identifiers
