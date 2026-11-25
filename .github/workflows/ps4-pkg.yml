@@ -94,6 +94,6 @@ jobs:
 
       - name: Publish direct-download GitHub Release
         env:
-          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create v1.1.2 "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.2" --notes "PS4 homebrew patch-information viewer. Package metadata and icon have been normalized. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
