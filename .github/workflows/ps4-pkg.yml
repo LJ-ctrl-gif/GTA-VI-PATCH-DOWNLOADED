@@ -1,0 +1,72 @@
+name: PS4 Homebrew Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "assets/**"
+      - "config/**"
+      - "Makefile"
+      - ".github/workflows/ps4-pkg.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Install build utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang lld make wget unzip imagemagick
+
+      - name: Download OpenOrbis toolchain release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/openorbis"
+          api="https://api.github.com/repos/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/latest"
+          asset_url="$(curl -fsSL "$api" | jq -r '.assets[] | select(.name | test("linux.*(zip|tar.gz)$"; "i")) | .browser_download_url' | head -n 1)"
+          if [ -z "$asset_url" ]; then
+            echo "::error::Could not find a Linux OpenOrbis toolchain release archive."
+            exit 1
+          fi
+          archive="$RUNNER_TEMP/openorbis/toolchain-archive"
+          curl -fL "$asset_url" -o "$archive"
+          if file "$archive" | grep -qi 'zip'; then
+            unzip -q "$archive" -d "$RUNNER_TEMP/openorbis/extracted"
+          else
+            mkdir -p "$RUNNER_TEMP/openorbis/extracted"
+            tar -xf "$archive" -C "$RUNNER_TEMP/openorbis/extracted"
+          fi
+          toolchain_root="$(find "$RUNNER_TEMP/openorbis/extracted" -type f -path '*/bin/linux/create-fself' -printf '%h\n' | sed 's#/bin/linux##' | head -n 1)"
+          if [ -z "$toolchain_root" ]; then
+            echo "::error::The downloaded archive did not contain bin/linux/create-fself."
+            find "$RUNNER_TEMP/openorbis/extracted" -maxdepth 4 -type f | head -n 80
+            exit 1
+          fi
+          echo "OO_PS4_TOOLCHAIN=$toolchain_root" >> "$GITHUB_ENV"
+          echo "$toolchain_root/bin/linux" >> "$GITHUB_PATH"
+
+      - name: Generate PS4 icon
+        run: |
+          mkdir -p sce_sys/about
+          convert -background none assets/icon.svg -resize 512x512 sce_sys/icon0.png
+
+      - name: Build PS4 PKG
+        run: |
+          make
+
+      - name: Upload PKG
+        uses: actions/upload-artifact@v4
+        with:
+          name: GTA-VI-PATCH-DOWNLOADED-PKG
+          path: "*.pkg"
+          if-no-files-found: error
+          retention-days: 14
