@@ -110,7 +110,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
         drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
         drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
-        drawText(scene, "APP VERSION: 1.0", 175, 640, 4, muted);
+        drawText(scene, "APP VERSION: 1.1", 175, 640, 4, muted);
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 710, 3, white);
         drawText(scene, "MODE: OFFLINE METADATA ONLY", 175, 765, 3, muted);
         drawText(scene, "NETWORK ACCESS: NOT IMPLEMENTED", 175, 820, 3, muted);
@@ -121,12 +121,12 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         const Color dot = (selected == i) ? red : muted;
         scene->DrawRectangle(1710 + i * 24, 970, 12, 12, dot);
     }
-    drawText(scene, "BUILD 1.0  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    drawText(scene, "BUILD 1.1  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
     scePadInit();
-    const int padHandle = scePadOpen(1, 0, 0, nullptr);
+    int padHandle = scePadOpen(1, 0, 0, nullptr);
     uint32_t previousButtons = 0;
     int selected = 0;
     bool controllerConnected = false;
@@ -149,6 +149,7 @@ int main(int, char**) {
     scene->FrameWait(1);
 
     int frame = 0;
+    int reconnectFrames = 0;
     for (;;) {
         if (padHandle >= 0) {
             OrbisPadData pad = {};
@@ -168,6 +169,24 @@ int main(int, char**) {
         } else {
             previousButtons = 0;
         }
+
+        // Re-open the controller periodically while disconnected. The Pad API
+        // exposes scePadClose/scePadOpen; this avoids requiring an app restart
+        // after a controller is connected again.
+        if (!controllerConnected) {
+            ++reconnectFrames;
+            if (reconnectFrames >= 120) {
+                if (padHandle >= 0) {
+                    scePadClose(padHandle);
+                }
+                padHandle = scePadOpen(1, 0, 0, nullptr);
+                previousButtons = 0;
+                reconnectFrames = 0;
+            }
+        } else {
+            reconnectFrames = 0;
+        }
+
         scene->FrameBufferSwap();
         drawInterface(scene, patch, selected, controllerConnected);
         scene->SubmitFlip(frame & 1);
