@@ -1,44 +1,42 @@
 # GTA VI - PATCH DOWNLOADED
 
-A PS4 homebrew project for a patch-information viewer and compatibility checker.
+A native PS4 homebrew application for displaying patch metadata and platform compatibility.
 
-## Current application
+## Current behavior
 
-The native interface uses a black background with neon-red accents and has three controller-selectable screens: **Patch Info**, **Compatibility**, and **About**. Build 1.1 displays live controller connection status, clears stale button-edge history after disconnects, and periodically retries controller initialization while disconnected. Build 0.8 adds a persistent offline-viewer indicator and three page-position markers. Build 0.6 explicitly states that no patch file is bundled with the app. It also retains the offline-only notice and confirms that network access is not implemented. Build 0.3 introduced the static-metadata label and repeated PS5-to-PS4 incompatibility warning. Use the DualShock 4 D-pad left/right buttons to switch screens. The patch screen displays the configured title ID, version, source platform, and compatibility status.
+The application has three controller-selectable screens: Patch Info, Compatibility, and About. It displays the configured source record from:
 
-The configured source page is `https://prosperopatches.com/PPSA29660?v=01.002.001`.
-The title identifier `PPSA29660` is identified in this project as a PS5 title. The app marks it **NOT COMPATIBLE WITH PS4** and keeps download disabled. This is a metadata-based compatibility notice, not a live device or package inspection. It does not download, decrypt, install, or modify game packages.
+`https://prosperopatches.com/PPSA29660?v=01.002.001`
 
-Only use update files for titles and devices you own and are authorized to update. The app will not bypass platform signatures, licensing, or system protections.
+The record identifies title `PPSA29660`, version `01.002.001`, and source platform PS5. The app explicitly marks it incompatible with PS4. It does not include a game, patch payload, download queue, decryptor, or installer.
 
-## Project layout
+## PS4 package metadata
 
-- `app/` — native application source, patch model, and screen UI
-- `config/` — source page and known title metadata
-- `assets/` — app artwork source
-- `tests/` — host-side compatibility guard test
-- `.github/workflows/` — CI build and PKG artifact workflow
-- `Makefile` — OpenOrbis PS4 build rules
+The package Content ID has been normalized to uppercase:
+
+`IV0000-GTAD00001_00-GTAVIPATCHDOWNLD`
+
+This change addresses a suspected package-identifier formatting problem associated with the previously reported Package Installer rejection code. It is a build-side correction, not proof of successful installation or launch. The app must still be tested on the target PS4.
 
 ## Build pipeline
 
-The GitHub Actions workflow:
-1. Runs the patch compatibility test.
-2. Downloads the pinned OpenOrbis v0.5.4 toolchain and verifies its archive hash.
-3. Generates a 512x512 PS4 icon from the SVG artwork.
-4. Compiles the native PS4 application.
-5. Packages the output as a PKG and uploads it as a workflow artifact.
+GitHub Actions runs the compatibility test, downloads the pinned OpenOrbis v0.5.4 toolchain, generates the PS4 icon, builds the native executable, packages it as a PKG, and uploads the resulting artifact and release asset.
 
-A PKG is not considered ready until the workflow completes successfully. Build 1.1 includes the three-screen interface, offline status indicator, page-position markers, safer controller input-state handling, and periodic controller reconnection attempts. Build 0.7 introduced the metadata-based compatibility clarification and includes the three-screen interface, controller navigation, explicit offline-only status, a no-patch-file notice, and a clarification that compatibility is based on configured metadata. Live webpage retrieval and a download queue are not implemented.
+A successful CI build confirms compilation and packaging only. It does not certify runtime behavior on a physical PS4. Test installation and launch on the target console before treating the release as verified.
+
+## Controls
+
+Use the DualShock 4 D-pad left/right buttons to switch between Patch Info, Compatibility, and About.
 
 ## Target
 
-- Display name: **GTA VI - PATCH DOWNLOADED**
+- Application: GTA VI - PATCH DOWNLOADED
 - Platform: PS4 homebrew
-- Initial source record: PS5 patch metadata, marked **NOT COMPATIBLE WITH PS4**
-- Visual direction: black background with neon-red accents
+- Source record: PS5 patch metadata
+- Compatibility with PS4: Not compatible
+- Visual theme: black with neon-red accents
 
 ## References
 
 - [OpenOrbis PS4 Toolchain](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain)
-- [OpenOrbis graphics sample](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/tree/v0.5.4/samples/graphics)
+- [Prospero Patches source record](https://prosperopatches.com/PPSA29660?v=01.002.001)
