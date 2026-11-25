@@ -73,7 +73,6 @@ jobs:
       - name: Validate package identifiers
         run: |
           test "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD" = "$(printf '%s' 'IV0000-GTAD00001_00-GTAVIPATCHDOWNLD' | tr '[:lower:]' '[:upper:]')"
-          test "${#CONTENT_ID}" -eq 0 || true
 
       - name: Build PS4 PKG
         run: make
