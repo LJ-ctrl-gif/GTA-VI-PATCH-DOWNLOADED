@@ -61,6 +61,9 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
 
     drawText(scene, "GTA VI PATCH DOWNLOADED", 125, 115, 7, white);
     drawText(scene, "PATCH MANAGER  /  PS4 HOMEBREW", 128, 205, 4, muted);
+    scene->DrawRectangle(1510, 125, 285, 48, redDark);
+    scene->DrawRectangle(1510, 125, 6, 48, red);
+    drawText(scene, "OFFLINE VIEWER", 1530, 140, 3, red);
     scene->DrawRectangle(125, 270, 1670, 2, panel2);
     const char* tabs[] = {"PATCH INFO", "COMPATIBILITY", "ABOUT"};
     for (int i = 0; i < 3; ++i) {
@@ -106,14 +109,18 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
         drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
         drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
-        drawText(scene, "APP VERSION: 0.7", 175, 640, 4, muted);
+        drawText(scene, "APP VERSION: 0.8", 175, 640, 4, muted);
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 710, 3, white);
         drawText(scene, "MODE: OFFLINE METADATA ONLY", 175, 765, 3, muted);
         drawText(scene, "NETWORK ACCESS: NOT IMPLEMENTED", 175, 820, 3, muted);
         drawText(scene, "LEFT / RIGHT: CHANGE SCREEN", 175, 875, 3, muted);
     }
     drawText(scene, "LEFT / RIGHT: SWITCH SCREEN", 128, 925, 3, muted);
-    drawText(scene, "BUILD 0.7  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    for (int i = 0; i < 3; ++i) {
+        const Color dot = (selected == i) ? red : muted;
+        scene->DrawRectangle(1710 + i * 24, 970, 12, 12, dot);
+    }
+    drawText(scene, "BUILD 0.8  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
