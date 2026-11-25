@@ -110,7 +110,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
         drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
         drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
-        drawText(scene, "APP VERSION: 0.9", 175, 640, 4, muted);
+        drawText(scene, "APP VERSION: 1.0", 175, 640, 4, muted);
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 710, 3, white);
         drawText(scene, "MODE: OFFLINE METADATA ONLY", 175, 765, 3, muted);
         drawText(scene, "NETWORK ACCESS: NOT IMPLEMENTED", 175, 820, 3, muted);
@@ -121,7 +121,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         const Color dot = (selected == i) ? red : muted;
         scene->DrawRectangle(1710 + i * 24, 970, 12, 12, dot);
     }
-    drawText(scene, "BUILD 0.9  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    drawText(scene, "BUILD 1.0  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
@@ -160,7 +160,13 @@ int main(int, char**) {
                 if (pressed & ORBIS_PAD_BUTTON_LEFT) selected = (selected + 2) % 3;
                 if (pressed & ORBIS_PAD_BUTTON_RIGHT) selected = (selected + 1) % 3;
                 previousButtons = buttons;
+            } else {
+                // Clear edge history so a held button is not treated as newly pressed
+                // after the controller reconnects.
+                previousButtons = 0;
             }
+        } else {
+            previousButtons = 0;
         }
         scene->FrameBufferSwap();
         drawInterface(scene, patch, selected, controllerConnected);
