@@ -5,16 +5,18 @@ CONTENT_ID := IV0000-GTAD00001_00-GTAVIpatchdownld
 
 TOOLCHAIN := $(OO_PS4_TOOLCHAIN)
 PROJDIR := app
+COMMONDIR := $(TOOLCHAIN)/samples/_common
 INTDIR := $(PROJDIR)/x64/Debug
 
 CXXFILES := $(wildcard $(PROJDIR)/*.cpp)
 OBJS := $(patsubst $(PROJDIR)/%.cpp,$(INTDIR)/%.o,$(CXXFILES))
+COMMONOBJ := $(INTDIR)/graphics.o
 
 CCX := clang++
 LD := ld.lld
 
-CXXFLAGS := --target=x86_64-pc-freebsd12-elf -fPIC -funwind-tables -c -isysroot $(TOOLCHAIN) -isystem $(TOOLCHAIN)/include -isystem $(TOOLCHAIN)/include/c++/v1
-LDFLAGS := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x --eh-frame-hdr -L$(TOOLCHAIN)/lib -lc -lkernel -lc++ $(TOOLCHAIN)/lib/crt1.o
+CXXFLAGS := --target=x86_64-pc-freebsd12-elf -fPIC -funwind-tables -c -isysroot $(TOOLCHAIN) -isystem $(TOOLCHAIN)/include -isystem $(TOOLCHAIN)/include/c++/v1 -I$(COMMONDIR)
+LDFLAGS := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x --eh-frame-hdr -L$(TOOLCHAIN)/lib -lc -lkernel -lc++ -lSceVideoOut -lSceSysmodule $(TOOLCHAIN)/lib/crt1.o
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -34,8 +36,11 @@ $(INTDIR):
 $(INTDIR)/%.o: $(PROJDIR)/%.cpp | $(INTDIR)
 	$(CCX) $(CXXFLAGS) -o $@ $<
 
-eboot.bin: $(OBJS)
-	$(LD) $(INTDIR)/*.o -o $(INTDIR)/app.elf $(LDFLAGS)
+$(COMMONOBJ): $(COMMONDIR)/graphics.cpp $(COMMONDIR)/graphics.h $(COMMONDIR)/log.h | $(INTDIR)
+	$(CCX) $(CXXFLAGS) -I$(COMMONDIR) -o $@ $(COMMONDIR)/graphics.cpp
+
+eboot.bin: $(OBJS) $(COMMONOBJ)
+	$(LD) $(OBJS) $(COMMONOBJ) -o $(INTDIR)/app.elf $(LDFLAGS)
 	$(TOOLCHAIN)/bin/$(CDIR)/create-fself -in=$(INTDIR)/app.elf -out=$(INTDIR)/app.oelf --eboot "eboot.bin" --paid 0x3800000000000011
 
 sce_sys/param.sfo:
@@ -54,4 +59,4 @@ $(CONTENT_ID).pkg: eboot.bin sce_sys/param.sfo sce_sys/icon0.png
 	$(TOOLCHAIN)/bin/$(CDIR)/PkgTool.Core pkg_build pkg.gp4 .
 
 clean:
-	rm -rf $(INTDIR) eboot.bin pkg.gp4 $(CONTENT_ID).pkg sce_sys/param.sfo
+	rm -rf $(INTDIR) eboot.bin pkg.gp4 pkg sce_sys/param.sfo $(CONTENT_ID).pkg
