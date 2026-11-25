@@ -70,22 +70,42 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, tabs[i], x + 18, 292, 3, white);
     }
 
-    scene->DrawRectangle(125, 325, 1670, 300, panel2);
-    scene->DrawRectangle(125, 325, 10, 300, red);
-    drawText(scene, "SOURCE PATCH", 175, 365, 4, red);
-    drawText(scene, "TITLE ID", 175, 445, 3, muted);
-    drawText(scene, patch.titleId, 175, 485, 5, white);
-    drawText(scene, "VERSION", 750, 445, 3, muted);
-    drawText(scene, patch.version, 750, 485, 5, white);
-    drawText(scene, "SOURCE PLATFORM", 1280, 445, 3, muted);
-    drawText(scene, patch.sourcePlatform, 1280, 485, 5, white);
+    if (selected == 0) {
+        scene->DrawRectangle(125, 325, 1670, 300, panel2);
+        scene->DrawRectangle(125, 325, 10, 300, red);
+        drawText(scene, "SOURCE PATCH", 175, 365, 4, red);
+        drawText(scene, "TITLE ID", 175, 445, 3, muted);
+        drawText(scene, patch.titleId, 175, 485, 5, white);
+        drawText(scene, "VERSION", 750, 445, 3, muted);
+        drawText(scene, patch.version, 750, 485, 5, white);
+        drawText(scene, "SOURCE PLATFORM", 1280, 445, 3, muted);
+        drawText(scene, patch.sourcePlatform, 1280, 485, 5, white);
 
-    scene->DrawRectangle(125, 690, 1670, 245, redDark);
-    scene->DrawRectangle(125, 690, 1670, 8, red);
-    drawText(scene, "INCOMPATIBLE PLATFORM", 175, 735, 6, red);
-    drawText(scene, "THIS UPDATE TARGETS PS5 - NOT PS4", 175, 820, 4, white);
-    drawText(scene, "DOWNLOAD DISABLED", 1280, 820, 4, red);
-    drawText(scene, "BUILD 0.1  /  COMPATIBILITY CHECK ACTIVE", 128, 970, 3, muted);
+        scene->DrawRectangle(125, 690, 1670, 245, redDark);
+        scene->DrawRectangle(125, 690, 1670, 8, red);
+        drawText(scene, "INCOMPATIBLE PLATFORM", 175, 735, 6, red);
+        drawText(scene, "THIS UPDATE TARGETS PS5 - NOT PS4", 175, 820, 4, white);
+        drawText(scene, "DOWNLOAD DISABLED", 1280, 820, 4, red);
+    } else if (selected == 1) {
+        scene->DrawRectangle(125, 345, 1670, 550, panel2);
+        scene->DrawRectangle(125, 345, 10, 550, red);
+        drawText(scene, "COMPATIBILITY RESULT", 175, 395, 5, red);
+        drawText(scene, "SOURCE PLATFORM: PS5", 175, 485, 4, white);
+        drawText(scene, "TARGET PLATFORM: PS4", 175, 555, 4, white);
+        drawText(scene, "RESULT: NOT COMPATIBLE", 175, 640, 5, red);
+        drawText(scene, "PS5 UPDATE PACKAGES CANNOT BE INSTALLED ON PS4", 175, 735, 3, white);
+        drawText(scene, "NO DOWNLOAD OR INSTALL ACTION IS AVAILABLE", 175, 795, 3, muted);
+    } else {
+        scene->DrawRectangle(125, 345, 1670, 550, panel2);
+        scene->DrawRectangle(125, 345, 10, 550, red);
+        drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
+        drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
+        drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
+        drawText(scene, "BUILD 0.2", 175, 640, 4, muted);
+        drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 735, 3, white);
+        drawText(scene, "LEFT / RIGHT: CHANGE SCREEN", 175, 795, 3, muted);
+    }
+    drawText(scene, "BUILD 0.2  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
