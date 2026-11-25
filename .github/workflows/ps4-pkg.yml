@@ -13,7 +13,7 @@ on:
       - ".github/workflows/ps4-pkg.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -85,3 +85,11 @@ jobs:
           path: "*.pkg"
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish direct-download GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v1.1.1 "IV0000-GTAD00001_00-GTAVIpatchdownld.pkg" \
+            --title "GTA VI - PATCH DOWNLOADED v1.1.1" \
+            --notes "Native PS4 offline patch-information viewer. The listed PPSA29660 update is for PS5 and is not installable on PS4. This application does not download or install game updates."
