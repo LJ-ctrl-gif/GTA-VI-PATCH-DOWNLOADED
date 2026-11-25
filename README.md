@@ -4,7 +4,7 @@ A PS4 homebrew project for a patch-information viewer and compatibility checker.
 
 ## Current application
 
-The native interface uses a black background with neon-red accents and has three controller-selectable screens: **Patch Info**, **Compatibility**, and **About**. Build 1.0 displays live controller connection status and clears button-edge history after a controller disconnect, preventing stale input state after reconnection. Build 0.8 adds a persistent offline-viewer indicator and three page-position markers. Build 0.6 explicitly states that no patch file is bundled with the app. It also retains the offline-only notice and confirms that network access is not implemented. Build 0.3 introduced the static-metadata label and repeated PS5-to-PS4 incompatibility warning. Use the DualShock 4 D-pad left/right buttons to switch screens. The patch screen displays the configured title ID, version, source platform, and compatibility status.
+The native interface uses a black background with neon-red accents and has three controller-selectable screens: **Patch Info**, **Compatibility**, and **About**. Build 1.1 displays live controller connection status, clears stale button-edge history after disconnects, and periodically retries controller initialization while disconnected. Build 0.8 adds a persistent offline-viewer indicator and three page-position markers. Build 0.6 explicitly states that no patch file is bundled with the app. It also retains the offline-only notice and confirms that network access is not implemented. Build 0.3 introduced the static-metadata label and repeated PS5-to-PS4 incompatibility warning. Use the DualShock 4 D-pad left/right buttons to switch screens. The patch screen displays the configured title ID, version, source platform, and compatibility status.
 
 The configured source page is `https://prosperopatches.com/PPSA29660?v=01.002.001`.
 The title identifier `PPSA29660` is identified in this project as a PS5 title. The app marks it **NOT COMPATIBLE WITH PS4** and keeps download disabled. This is a metadata-based compatibility notice, not a live device or package inspection. It does not download, decrypt, install, or modify game packages.
@@ -29,7 +29,7 @@ The GitHub Actions workflow:
 4. Compiles the native PS4 application.
 5. Packages the output as a PKG and uploads it as a workflow artifact.
 
-A PKG is not considered ready until the workflow completes successfully. Build 1.0 includes the three-screen interface, offline status indicator, page-position markers, and safer controller input-state handling. Build 0.7 introduced the metadata-based compatibility clarification and includes the three-screen interface, controller navigation, explicit offline-only status, a no-patch-file notice, and a clarification that compatibility is based on configured metadata. Live webpage retrieval and a download queue are not implemented.
+A PKG is not considered ready until the workflow completes successfully. Build 1.1 includes the three-screen interface, offline status indicator, page-position markers, safer controller input-state handling, and periodic controller reconnection attempts. Build 0.7 introduced the metadata-based compatibility clarification and includes the three-screen interface, controller navigation, explicit offline-only status, a no-patch-file notice, and a clarification that compatibility is based on configured metadata. Live webpage retrieval and a download queue are not implemented.
 
 ## Target
 
