@@ -104,14 +104,14 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
         drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
         drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
-        drawText(scene, "BUILD 0.2", 175, 640, 4, muted);
+        drawText(scene, "APP VERSION: 0.5", 175, 640, 4, muted);
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 710, 3, white);
         drawText(scene, "MODE: OFFLINE METADATA ONLY", 175, 765, 3, muted);
         drawText(scene, "NETWORK ACCESS: NOT IMPLEMENTED", 175, 820, 3, muted);
         drawText(scene, "LEFT / RIGHT: CHANGE SCREEN", 175, 875, 3, muted);
     }
     drawText(scene, "LEFT / RIGHT: SWITCH SCREEN", 128, 925, 3, muted);
-    drawText(scene, "BUILD 0.4  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    drawText(scene, "BUILD 0.5  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
