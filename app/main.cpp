@@ -45,7 +45,7 @@ static void drawText(Scene2D* scene, const char* text, int x, int y, int scale, 
     }
 }
 
-static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected) {
+static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected, bool controllerConnected) {
     const Color background = {5, 6, 10};
     const Color panel = {15, 18, 27};
     const Color panel2 = {22, 25, 36};
@@ -64,6 +64,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
     scene->DrawRectangle(1510, 125, 285, 48, redDark);
     scene->DrawRectangle(1510, 125, 6, 48, red);
     drawText(scene, "OFFLINE VIEWER", 1530, 140, 3, red);
+    drawText(scene, controllerConnected ? "PAD: CONNECTED" : "PAD: NOT DETECTED", 1510, 205, 3, muted);
     scene->DrawRectangle(125, 270, 1670, 2, panel2);
     const char* tabs[] = {"PATCH INFO", "COMPATIBILITY", "ABOUT"};
     for (int i = 0; i < 3; ++i) {
@@ -109,7 +110,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "ABOUT THIS APPLICATION", 175, 395, 5, red);
         drawText(scene, "GTA VI - PATCH DOWNLOADED", 175, 485, 4, white);
         drawText(scene, "PS4 HOMEBREW PATCH INFORMATION VIEWER", 175, 555, 3, white);
-        drawText(scene, "APP VERSION: 0.8", 175, 640, 4, muted);
+        drawText(scene, "APP VERSION: 0.9", 175, 640, 4, muted);
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 710, 3, white);
         drawText(scene, "MODE: OFFLINE METADATA ONLY", 175, 765, 3, muted);
         drawText(scene, "NETWORK ACCESS: NOT IMPLEMENTED", 175, 820, 3, muted);
@@ -120,7 +121,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         const Color dot = (selected == i) ? red : muted;
         scene->DrawRectangle(1710 + i * 24, 970, 12, 12, dot);
     }
-    drawText(scene, "BUILD 0.8  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    drawText(scene, "BUILD 0.9  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
@@ -128,6 +129,7 @@ int main(int, char**) {
     const int padHandle = scePadOpen(1, 0, 0, nullptr);
     uint32_t previousButtons = 0;
     int selected = 0;
+    bool controllerConnected = false;
     const PatchRecord& patch = GetConfiguredPatch();
     Scene2D* scene = new Scene2D(1920, 1080, 4);
 
@@ -137,12 +139,12 @@ int main(int, char**) {
     }
 
     scene->SetActiveFrameBuffer(0);
-    drawInterface(scene, patch, selected);
+    drawInterface(scene, patch, selected, controllerConnected);
     scene->SubmitFlip(0);
     scene->FrameWait(0);
 
     scene->FrameBufferSwap();
-    drawInterface(scene, patch, selected);
+    drawInterface(scene, patch, selected, controllerConnected);
     scene->SubmitFlip(1);
     scene->FrameWait(1);
 
@@ -150,7 +152,9 @@ int main(int, char**) {
     for (;;) {
         if (padHandle >= 0) {
             OrbisPadData pad = {};
-            if (scePadRead(padHandle, &pad, 1) == 0 && pad.connected) {
+            const int readResult = scePadRead(padHandle, &pad, 1);
+            controllerConnected = (readResult == 0 && pad.connected);
+            if (controllerConnected) {
                 const uint32_t buttons = pad.buttons;
                 const uint32_t pressed = buttons & ~previousButtons;
                 if (pressed & ORBIS_PAD_BUTTON_LEFT) selected = (selected + 2) % 3;
@@ -159,7 +163,7 @@ int main(int, char**) {
             }
         }
         scene->FrameBufferSwap();
-        drawInterface(scene, patch, selected);
+        drawInterface(scene, patch, selected, controllerConnected);
         scene->SubmitFlip(frame & 1);
         scene->FrameWait(frame & 1);
         ++frame;
