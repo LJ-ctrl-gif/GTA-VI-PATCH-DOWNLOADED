@@ -1,0 +1,11 @@
+{
+  "application_name": "GTA VI - PATCH DOWNLOADED",
+  "source_url": "https://prosperopatches.com/PPSA29660?v=01.002.001",
+  "title_id": "PPSA29660",
+  "version": "01.002.001",
+  "source_platform": "PS5",
+  "target_platform": "PS4",
+  "compatible": false,
+  "status": "INCOMPATIBLE_PLATFORM",
+  "message": "This update is for a PS5 title and cannot be installed on a PS4."
+}
