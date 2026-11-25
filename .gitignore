@@ -1,0 +1,8 @@
+app/x64/
+*.o
+*.elf
+*.oelf
+eboot.bin
+pkg.gp4
+*.pkg
+sce_sys/param.sfo
