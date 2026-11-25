@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sstream>
 #include <unistd.h>
+#include <orbis/Pad.h>
 
 #include "patch_catalog.h"
 #include "graphics.h"
@@ -44,7 +45,7 @@ static void drawText(Scene2D* scene, const char* text, int x, int y, int scale, 
     }
 }
 
-static void drawInterface(Scene2D* scene, const PatchRecord& patch) {
+static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected) {
     const Color background = {5, 6, 10};
     const Color panel = {15, 18, 27};
     const Color panel2 = {22, 25, 36};
@@ -61,6 +62,13 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch) {
     drawText(scene, "GTA VI PATCH DOWNLOADED", 125, 115, 7, white);
     drawText(scene, "PATCH MANAGER  /  PS4 HOMEBREW", 128, 205, 4, muted);
     scene->DrawRectangle(125, 270, 1670, 2, panel2);
+    const char* tabs[] = {"PATCH INFO", "COMPATIBILITY", "ABOUT"};
+    for (int i = 0; i < 3; ++i) {
+        const int x = 125 + i * 565;
+        const Color tabColor = (selected == i) ? red : panel2;
+        scene->DrawRectangle(x, 285, 520, 28, tabColor);
+        drawText(scene, tabs[i], x + 18, 292, 3, white);
+    }
 
     scene->DrawRectangle(125, 325, 1670, 300, panel2);
     scene->DrawRectangle(125, 325, 10, 300, red);
@@ -81,6 +89,10 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch) {
 }
 
 int main(int, char**) {
+    scePadInit();
+    const int padHandle = scePadOpen(1, 0, 0, nullptr);
+    uint32_t previousButtons = 0;
+    int selected = 0;
     const PatchRecord& patch = GetConfiguredPatch();
     Scene2D* scene = new Scene2D(1920, 1080, 4);
 
@@ -90,7 +102,7 @@ int main(int, char**) {
     }
 
     scene->SetActiveFrameBuffer(0);
-    drawInterface(scene, patch);
+    drawInterface(scene, patch, selected);
     scene->SubmitFlip(0);
     scene->FrameWait(0);
 
@@ -99,6 +111,24 @@ int main(int, char**) {
     scene->SubmitFlip(1);
     scene->FrameWait(1);
 
-    for (;;) sleep(1);
+    int frame = 0;
+    for (;;) {
+        if (padHandle >= 0) {
+            OrbisPadData pad = {};
+            if (scePadRead(padHandle, &pad, 1) == 0 && pad.connected) {
+                const uint32_t buttons = pad.buttons;
+                const uint32_t pressed = buttons & ~previousButtons;
+                if (pressed & ORBIS_PAD_BUTTON_LEFT) selected = (selected + 2) % 3;
+                if (pressed & ORBIS_PAD_BUTTON_RIGHT) selected = (selected + 1) % 3;
+                previousButtons = buttons;
+            }
+        }
+        scene->FrameBufferSwap();
+        drawInterface(scene, patch, selected);
+        scene->SubmitFlip(frame & 1);
+        scene->FrameWait(frame & 1);
+        ++frame;
+        usleep(16000);
+    }
     return 0;
 }
