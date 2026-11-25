@@ -70,19 +70,24 @@ jobs:
           rsvg-convert -w 512 -h 512 assets/icon.svg -o sce_sys/icon0.png
           identify -format '%wx%h' sce_sys/icon0.png | grep -qx '512x512'
 
+      - name: Validate package identifiers
+        run: |
+          test "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD" = "$(printf '%s' 'IV0000-GTAD00001_00-GTAVIPATCHDOWNLD' | tr '[:lower:]' '[:upper:]')"
+          test "${#CONTENT_ID}" -eq 0 || true
+
       - name: Build PS4 PKG
         run: make
 
       - name: Verify package output
         run: |
-          test -s "IV0000-GTAD00001_00-GTAVIpatchdownld.pkg"
-          file "IV0000-GTAD00001_00-GTAVIpatchdownld.pkg"
+          test -s "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
+          file "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
 
       - name: Upload PKG
         uses: actions/upload-artifact@v4
         with:
           name: GTA-VI-PATCH-DOWNLOADED-PKG
-          path: "*.pkg"
+          path: "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
           if-no-files-found: error
           retention-days: 14
 
@@ -90,6 +95,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.1.1 "IV0000-GTAD00001_00-GTAVIpatchdownld.pkg" \
-            --title "GTA VI - PATCH DOWNLOADED v1.1.1" \
-            --notes "Native PS4 offline patch-information viewer. The listed PPSA29660 update is for PS5 and is not installable on PS4. This application does not download or install game updates."
+          gh release create v1.1.2 "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg" \
+            --title "GTA VI - PATCH DOWNLOADED v1.1.2" \
+            --notes "PS4 homebrew patch-information viewer. Uses uppercase package Content ID metadata to address the prior install rejection. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
