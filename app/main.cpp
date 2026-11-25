@@ -107,7 +107,7 @@ int main(int, char**) {
     scene->FrameWait(0);
 
     scene->FrameBufferSwap();
-    drawInterface(scene, patch);
+    drawInterface(scene, patch, selected);
     scene->SubmitFlip(1);
     scene->FrameWait(1);
 
