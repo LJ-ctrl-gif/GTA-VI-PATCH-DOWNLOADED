@@ -50,7 +50,7 @@ jobs:
           curl -fL "$url" -o "$archive"
           echo "3c7cd5bb593ca74fa1c13fd59f3938dc0fc07985167f7275063019e63abe4526  $archive" | sha256sum -c -
           tar -xzf "$archive" -C "$toolchain_dir"
-          toolchain_root="$(find "$toolchain_dir" -type f -name link.x -printf '%h\\n' | head -n 1)"
+          toolchain_root="$(dirname "$(find "$toolchain_dir" -type f -name link.x -print -quit)")"
           if [ -z "$toolchain_root" ] || [ ! -x "$toolchain_root/bin/linux/create-fself" ]; then
             echo "::error::OpenOrbis toolchain extraction is incomplete."
             find "$toolchain_dir" -maxdepth 4 -type f | head -n 100
@@ -94,8 +94,6 @@ jobs:
 
       - name: Publish direct-download GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.1.2 "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg" \\
-            --title "GTA VI - PATCH DOWNLOADED v1.1.2" \\
-            --notes "PS4 homebrew patch-information viewer. Package metadata and icon have been normalized. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
+          gh release create v1.1.2 "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.2" --notes "PS4 homebrew patch-information viewer. Package metadata and icon have been normalized. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
