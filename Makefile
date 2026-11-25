@@ -16,7 +16,7 @@ CCX := clang++
 LD := ld.lld
 
 CXXFLAGS := --target=x86_64-pc-freebsd12-elf -fPIC -funwind-tables -c -isysroot $(TOOLCHAIN) -isystem $(TOOLCHAIN)/include -isystem $(TOOLCHAIN)/include/c++/v1 -I$(COMMONDIR)
-LDFLAGS := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x --eh-frame-hdr -L$(TOOLCHAIN)/lib -lc -lkernel -lc++ -lSceVideoOut -lSceSysmodule $(TOOLCHAIN)/lib/crt1.o
+LDFLAGS := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x --eh-frame-hdr -L$(TOOLCHAIN)/lib -lc -lkernel -lc++ -lSceVideoOut -lScePad -lSceSysmodule $(TOOLCHAIN)/lib/crt1.o
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
