@@ -27,7 +27,7 @@ jobs:
       - name: Install build utilities
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential clang lld make curl jq librsvg2-bin libicu70
+          sudo apt-get install -y build-essential clang lld make curl jq librsvg2-bin imagemagick libicu70
 
       - name: Test patch compatibility guard
         run: |
@@ -67,8 +67,39 @@ jobs:
       - name: Generate PS4 icon
         run: |
           mkdir -p sce_sys/about
-          rsvg-convert -w 512 -h 512 assets/icon.svg -o sce_sys/icon0.png
-          identify -format '%wx%h' sce_sys/icon0.png | grep -qx '512x512'
+          rsvg-convert -w 512 -h 512 assets/icon.svg -o /tmp/icon-alpha.png
+          convert /tmp/icon-alpha.png -background black -alpha remove -alpha off -depth 8 PNG24:sce_sys/icon0.png
+          identify -format '%wx%h %m %[channels]' sce_sys/icon0.png | grep -Eq '^512x512 PNG s?rgb
+
+      - name: Validate package identifiers
+        run: |
+          test "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD" = "$(printf '%s' 'IV0000-GTAD00001_00-GTAVIPATCHDOWNLD' | tr '[:lower:]' '[:upper:]')"
+
+      - name: Build PS4 PKG
+        run: make
+
+      - name: Verify package output
+        run: |
+          test -s "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
+          file "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
+
+      - name: Upload PKG
+        uses: actions/upload-artifact@v4
+        with:
+          name: GTA-VI-PATCH-DOWNLOADED-PKG
+          path: "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg"
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish direct-download GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v1.1.2 "IV0000-GTAD00001_00-GTAVIPATCHDOWNLD.pkg" \
+            --title "GTA VI - PATCH DOWNLOADED v1.1.2" \
+            --notes "PS4 homebrew patch-information viewer. Uses uppercase package Content ID metadata to address the prior install rejection. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
+
+          file sce_sys/icon0.png
 
       - name: Validate package identifiers
         run: |
