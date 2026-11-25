@@ -86,6 +86,8 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "INCOMPATIBLE PLATFORM", 175, 735, 6, red);
         drawText(scene, "THIS UPDATE TARGETS PS5 - NOT PS4", 175, 820, 4, white);
         drawText(scene, "DOWNLOAD DISABLED", 1280, 820, 4, red);
+        drawText(scene, "RECORD: STATIC PATCH METADATA", 175, 875, 3, muted);
+        drawText(scene, "LIVE PATCH CHECK: NOT AVAILABLE", 175, 915, 3, muted);
     } else if (selected == 1) {
         scene->DrawRectangle(125, 345, 1670, 550, panel2);
         scene->DrawRectangle(125, 345, 10, 550, red);
@@ -95,6 +97,7 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "RESULT: NOT COMPATIBLE", 175, 640, 5, red);
         drawText(scene, "PS5 UPDATE PACKAGES CANNOT BE INSTALLED ON PS4", 175, 735, 3, white);
         drawText(scene, "NO DOWNLOAD OR INSTALL ACTION IS AVAILABLE", 175, 795, 3, muted);
+        drawText(scene, "DO NOT USE THIS PS5 UPDATE ON A PS4 CONSOLE", 175, 850, 3, red);
     } else {
         scene->DrawRectangle(125, 345, 1670, 550, panel2);
         scene->DrawRectangle(125, 345, 10, 550, red);
@@ -105,7 +108,8 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
         drawText(scene, "SOURCE: PROSPEROPATCHES.COM", 175, 735, 3, white);
         drawText(scene, "LEFT / RIGHT: CHANGE SCREEN", 175, 795, 3, muted);
     }
-    drawText(scene, "BUILD 0.2  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
+    drawText(scene, "LEFT / RIGHT: SWITCH SCREEN", 128, 925, 3, muted);
+    drawText(scene, "BUILD 0.3  /  PATCH COMPATIBILITY VIEWER", 128, 970, 3, muted);
 }
 
 int main(int, char**) {
