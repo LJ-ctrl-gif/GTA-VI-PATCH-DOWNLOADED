@@ -61,6 +61,7 @@ jobs:
             mkdir -p "$toolchain_root/samples"
             cp -a "$RUNNER_TEMP/openorbis-source/samples/_common" "$toolchain_root/samples/"
           fi
+          test -s "$toolchain_root/samples/piglet/sce_sys/about/right.sprx"
           echo "OO_PS4_TOOLCHAIN=$toolchain_root" >> "$GITHUB_ENV"
           echo "$toolchain_root/bin/linux" >> "$GITHUB_PATH"
 
@@ -81,12 +82,17 @@ jobs:
         run: make clean && make
 
       - name: Verify package output
+        shell: bash
         run: |
+          set -euo pipefail
+          pkg="IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg"
           test -s eboot.bin
+          test -s sce_sys/about/right.sprx
           test -s sce_sys/param.sfo
           test -s sce_sys/icon0.png
-          test -s "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg"
-          file eboot.bin sce_sys/param.sfo sce_sys/icon0.png "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg"
+          test -s "$pkg"
+          file eboot.bin sce_sys/about/right.sprx sce_sys/param.sfo sce_sys/icon0.png "$pkg"
+          PkgTool.Core pkg_validate --verbose "$pkg"
 
       - name: Upload PKG
         uses: actions/upload-artifact@v4
@@ -100,4 +106,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.1.3 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.3" --notes "PS4 homebrew patch-information viewer. Package metadata and icon have been normalized. The listed PPSA29660 content is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
+          gh release create v1.1.4 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.4" --notes "PS4 homebrew patch-information viewer. Includes standard OpenOrbis right.sprx package resource and package validation. PPSA29660 is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
