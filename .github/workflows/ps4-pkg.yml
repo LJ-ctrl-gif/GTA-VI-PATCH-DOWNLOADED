@@ -56,12 +56,15 @@ jobs:
             find "$toolchain_dir" -maxdepth 4 -type f | head -n 100
             exit 1
           fi
-          if [ ! -f "$toolchain_root/samples/_common/graphics.cpp" ]; then
+          if [ ! -f "$toolchain_root/samples/_common/graphics.cpp" ] || [ ! -f "$toolchain_root/samples/piglet/sce_module/libc.prx" ] || [ ! -f "$toolchain_root/samples/piglet/sce_module/libSceFios2.prx" ]; then
             git clone --depth 1 --branch v0.5.4 https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain.git "$RUNNER_TEMP/openorbis-source"
             mkdir -p "$toolchain_root/samples"
             cp -a "$RUNNER_TEMP/openorbis-source/samples/_common" "$toolchain_root/samples/"
+            cp -a "$RUNNER_TEMP/openorbis-source/samples/piglet" "$toolchain_root/samples/"
           fi
           test -s "$toolchain_root/samples/piglet/sce_sys/about/right.sprx"
+          test -s "$toolchain_root/samples/piglet/sce_module/libc.prx"
+          test -s "$toolchain_root/samples/piglet/sce_module/libSceFios2.prx"
           echo "OO_PS4_TOOLCHAIN=$toolchain_root" >> "$GITHUB_ENV"
           echo "$toolchain_root/bin/linux" >> "$GITHUB_PATH"
 
@@ -88,10 +91,12 @@ jobs:
           pkg="IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg"
           test -s eboot.bin
           test -s sce_sys/about/right.sprx
+          test -s sce_module/libc.prx
+          test -s sce_module/libSceFios2.prx
           test -s sce_sys/param.sfo
           test -s sce_sys/icon0.png
           test -s "$pkg"
-          file eboot.bin sce_sys/about/right.sprx sce_sys/param.sfo sce_sys/icon0.png "$pkg"
+          file eboot.bin sce_sys/about/right.sprx sce_module/libc.prx sce_module/libSceFios2.prx sce_sys/param.sfo sce_sys/icon0.png "$pkg"
           PkgTool.Core pkg_validate --verbose "$pkg"
 
       - name: Upload PKG
@@ -106,4 +111,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.1.4 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.4" --notes "PS4 homebrew patch-information viewer. Includes standard OpenOrbis right.sprx package resource and package validation. PPSA29660 is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
+          gh release create v1.1.5 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.5" --notes "PS4 homebrew patch-information viewer. Includes OpenOrbis sample runtime modules (libc.prx and libSceFios2.prx) plus right.sprx and package validation. PPSA29660 is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
