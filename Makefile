@@ -6,6 +6,7 @@ CONTENT_ID := IV0000-BREW00001_00-GTAVIPATCHDOWNLD
 TOOLCHAIN := $(OO_PS4_TOOLCHAIN)
 PROJDIR := app
 COMMONDIR := $(TOOLCHAIN)/samples/_common
+PIGLETDIR := $(TOOLCHAIN)/samples/piglet
 INTDIR := $(PROJDIR)/x64/Debug
 
 CXXFILES := $(wildcard $(PROJDIR)/*.cpp)
@@ -46,7 +47,17 @@ eboot.bin: $(OBJS) $(COMMONOBJ)
 
 sce_sys/about/right.sprx:
 	mkdir -p sce_sys/about
-	cp "$(TOOLCHAIN)/samples/piglet/sce_sys/about/right.sprx" "$@"
+	cp "$(PIGLETDIR)/sce_sys/about/right.sprx" "$@"
+	test -s "$@"
+
+sce_module/libc.prx:
+	mkdir -p sce_module
+	cp "$(PIGLETDIR)/sce_module/libc.prx" "$@"
+	test -s "$@"
+
+sce_module/libSceFios2.prx:
+	mkdir -p sce_module
+	cp "$(PIGLETDIR)/sce_module/libSceFios2.prx" "$@"
 	test -s "$@"
 
 sce_sys/param.sfo:
@@ -63,10 +74,10 @@ sce_sys/param.sfo:
 	$(TOOLCHAIN)/bin/$(CDIR)/PkgTool.Core sfo_setentry $@ TITLE_ID --type Utf8 --maxsize 12 --value '$(TITLE_ID)'
 	$(TOOLCHAIN)/bin/$(CDIR)/PkgTool.Core sfo_setentry $@ VERSION --type Utf8 --maxsize 8 --value '$(VERSION)'
 
-$(CONTENT_ID).pkg: eboot.bin sce_sys/about/right.sprx sce_sys/param.sfo sce_sys/icon0.png
+$(CONTENT_ID).pkg: eboot.bin sce_sys/about/right.sprx sce_sys/param.sfo sce_sys/icon0.png sce_module/libc.prx sce_module/libSceFios2.prx
 	$(TOOLCHAIN)/bin/$(CDIR)/create-gp4 -out pkg.gp4 --content-id=$(CONTENT_ID) --files "$^"
 	$(TOOLCHAIN)/bin/$(CDIR)/PkgTool.Core pkg_build pkg.gp4 .
 	test -s $@
 
 clean:
-	rm -rf $(INTDIR) eboot.bin pkg.gp4 pkg sce_sys/param.sfo sce_sys/about/right.sprx $(CONTENT_ID).pkg
+	rm -rf $(INTDIR) eboot.bin pkg.gp4 pkg sce_sys/param.sfo sce_sys/about/right.sprx sce_module $(CONTENT_ID).pkg
