@@ -87,23 +87,23 @@ static void drawInterface(Scene2D* scene, const PatchRecord& patch, int selected
 
         scene->DrawRectangle(125, 690, 1670, 245, redDark);
         scene->DrawRectangle(125, 690, 1670, 8, red);
-        drawText(scene, "INCOMPATIBLE PLATFORM", 175, 735, 6, red);
-        drawText(scene, "THIS UPDATE TARGETS PS5 - NOT PS4", 175, 820, 4, white);
-        drawText(scene, "DOWNLOAD DISABLED", 1280, 820, 4, red);
-        drawText(scene, "RECORD: STATIC PATCH METADATA", 175, 875, 3, muted);
-        drawText(scene, "LIVE PATCH CHECK: NOT AVAILABLE", 175, 915, 3, muted);
-        drawText(scene, "NO PATCH FILE IS INCLUDED IN THIS APP", 950, 915, 3, red);
+        drawText(scene, "PS5 TITLE METADATA ONLY", 175, 735, 6, red);
+        drawText(scene, "PPSA38500 IS NOT VERIFIED AS A PS4 BUILD", 175, 820, 4, white);
+        drawText(scene, "NO VERIFIED PS4 PATCH", 1280, 820, 4, red);
+        drawText(scene, "RECORD: USER-REPORTED TITLE ID", 175, 875, 3, muted);
+        drawText(scene, "PATCH VERSION: UNVERIFIED", 175, 915, 3, muted);
+        drawText(scene, "NO GAME OR PATCH PAYLOAD IS INCLUDED", 950, 915, 3, red);
     } else if (selected == 1) {
         scene->DrawRectangle(125, 345, 1670, 550, panel2);
         scene->DrawRectangle(125, 345, 10, 550, red);
         drawText(scene, "COMPATIBILITY RESULT", 175, 395, 5, red);
-        drawText(scene, "SOURCE PLATFORM: PS5", 175, 485, 4, white);
+        drawText(scene, "TITLE ID: PPSA38500", 175, 485, 4, white);
         drawText(scene, "TARGET PLATFORM: PS4", 175, 555, 4, white);
-        drawText(scene, "RESULT: NOT COMPATIBLE", 175, 640, 5, red);
-        drawText(scene, "PS5 UPDATE PACKAGES CANNOT BE INSTALLED ON PS4", 175, 735, 3, white);
-        drawText(scene, "NO DOWNLOAD OR INSTALL ACTION IS AVAILABLE", 175, 795, 3, muted);
-        drawText(scene, "DO NOT USE THIS PS5 UPDATE ON A PS4 CONSOLE", 175, 850, 3, red);
-        drawText(scene, "COMPATIBILITY IS BASED ON CONFIGURED METADATA", 175, 875, 3, muted);
+        drawText(scene, "PS5-ONLY METADATA / PS4 NOT VERIFIED", 175, 640, 5, red);
+        drawText(scene, "A PS5 PACKAGE IS NOT A PS4 UPDATE", 175, 735, 3, white);
+        drawText(scene, "NO GAME OR PATCH DOWNLOAD IS IMPLEMENTED", 175, 795, 3, muted);
+        drawText(scene, "DO NOT INSTALL UNVERIFIED PACKAGES", 175, 850, 3, red);
+        drawText(scene, "TITLE ID ALONE DOES NOT PROVE PLATFORM COMPATIBILITY", 175, 875, 3, muted);
     } else {
         scene->DrawRectangle(125, 345, 1670, 550, panel2);
         scene->DrawRectangle(125, 345, 10, 550, red);
