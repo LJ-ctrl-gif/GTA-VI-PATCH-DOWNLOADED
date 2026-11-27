@@ -111,4 +111,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.1.5 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.5" --notes "PS4 homebrew patch-information viewer. Includes OpenOrbis sample runtime modules (libc.prx and libSceFios2.prx) plus right.sprx and package validation. PPSA29660 is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
+          gh release create v1.1.6 "IV0000-BREW00001_00-GTAVIPATCHDOWNLD.pkg" --title "GTA VI - PATCH DOWNLOADED v1.1.6" --notes "PS4 homebrew patch-information viewer. Includes OpenOrbis sample runtime modules (libc.prx and libSceFios2.prx) plus right.sprx and package validation. PPSA29660 is PS5-only and cannot be installed on PS4. No game or patch payload is downloaded."
